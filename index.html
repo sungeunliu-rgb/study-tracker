@@ -720,6 +720,13 @@ function renderList(idx) {
   listEl.innerHTML = wbOrder.map((wb, wi) => {
     const group = grouped[wb];
     const groupId = `wb-group-${idx}-${wi}`;
+
+    const subjectCount = {};
+    group.forEach(e => { if (e.subject) subjectCount[e.subject] = (subjectCount[e.subject] || 0) + 1; });
+    const topSubject = Object.keys(subjectCount).sort((a,b) => subjectCount[b] - subjectCount[a])[0] || '';
+    const bookEmoji = { '국어': '📘', '수학': '📙', '영어': '📒', '사회': '📕', '과학': '📗', '한국사': '📔', '기타': '📓' };
+    const emoji = bookEmoji[topSubject] || '📚';
+
     const rows = group.map(e => {
       const fd = formatDate(e.date);
       return `
@@ -743,7 +750,7 @@ function renderList(idx) {
     <div class="wb-group">
       <div class="wb-group-header" onclick="toggleGroup('${groupId}')">
         <div class="wb-group-left">
-          <span class="wb-group-title">📗 ${wb}</span>
+          <span class="wb-group-title">${emoji} ${wb}</span>
           <span class="wb-count-chip">${group.length}회</span>
         </div>
         <span class="wb-toggle-icon" id="icon-${groupId}">▼</span>
