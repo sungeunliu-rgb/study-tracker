@@ -558,25 +558,22 @@ textarea { resize: vertical; min-height: 58px; line-height: 1.6; }
 <script>
 const STORAGE_KEY = 'study_tracker_v2';
 const DAYS = ['일','월','화','수','목','금','토'];
-const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbwPb9oGpD5e_7ExhQdg5hpqfYYg1z3peEVsPOOAfb2zOlFx0msgff-2c6niMNCAP1EF/exec';
+const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbxxhN_cIsqxZJKk-vpYVfv7wlOGs7tjMi9SqyR0wCXjXTwsy7M5PUKqHsFr30kmkPoM/exec';
 
 function sendToSheet(name, entry) {
   if (!WEBHOOK_URL) return;
-  fetch(WEBHOOK_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      name,
-      date: entry.date,
-      subject: entry.subject,
-      workbook: entry.workbook,
-      pages: entry.pages,
-      memo: entry.memo
-    })
-  })
-  .then(r => r.json())
-  .then(d => { if (d.result !== 'ok') console.warn('시트 저장 실패:', d); })
-  .catch(err => console.warn('시트 전송 오류:', err));
+  const params = new URLSearchParams({
+    name,
+    date: entry.date,
+    subject: entry.subject || '',
+    workbook: entry.workbook,
+    pages: entry.pages || '',
+    memo: entry.memo || ''
+  });
+  fetch(`${WEBHOOK_URL}?${params.toString()}`)
+    .then(r => r.json())
+    .then(d => { if (d.result !== 'ok') console.warn('시트 저장 실패:', d); })
+    .catch(err => console.warn('시트 전송 오류:', err));
 }
 
 let state = { names: ['우현', '수현'], entries: [[], []] };
