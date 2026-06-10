@@ -570,10 +570,8 @@ function sendToSheet(name, entry) {
     pages: entry.pages || '',
     memo: entry.memo || ''
   });
-  fetch(`${WEBHOOK_URL}?${params.toString()}`)
-    .then(r => r.json())
-    .then(d => { if (d.result !== 'ok') console.warn('시트 저장 실패:', d); })
-    .catch(err => console.warn('시트 전송 오류:', err));
+  const img = new Image();
+  img.src = `${WEBHOOK_URL}?${params.toString()}`;
 }
 
 let state = { names: ['우현', '수현'], entries: [[], []] };
